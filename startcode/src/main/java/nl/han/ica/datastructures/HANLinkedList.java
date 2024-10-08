@@ -3,23 +3,23 @@ package nl.han.ica.datastructures;
 import java.util.NoSuchElementException;
 
 public class HANLinkedList<T> implements IHANLinkedList<T> {
-    private final ListNode<T> head;
+    private final HANLinkedListNode<T> head;
     private int size = 0;
 
     public HANLinkedList() {
-        this(new ListNode<>());
+        this(new HANLinkedListNode<>());
     }
 
     /**
      * Constructor for unit test mocking.
      */
-    HANLinkedList(ListNode<T> head) {
+    HANLinkedList(HANLinkedListNode<T> head) {
         this.head = head;
     }
 
     @Override
     public void addFirst(T value) {
-        ListNode<T> newNode = new ListNode<>(value);
+        HANLinkedListNode<T> newNode = new HANLinkedListNode<>(value);
         newNode.setNext(head.getNext());
         head.setNext(newNode);
         size++;
@@ -36,11 +36,11 @@ public class HANLinkedList<T> implements IHANLinkedList<T> {
         if (index < 0 || index > size) {
             throw new IndexOutOfBoundsException();
         }
-        ListNode<T> currentNode = head;
+        HANLinkedListNode<T> currentNode = head;
         for (int i = 0; i < index; i++) {
             currentNode = currentNode.getNext();
         }
-        ListNode<T> nodeToInsert = new ListNode<>(value);
+        HANLinkedListNode<T> nodeToInsert = new HANLinkedListNode<>(value);
         nodeToInsert.setNext(currentNode.getNext());
         currentNode.setNext(nodeToInsert);
         size++;
@@ -51,11 +51,11 @@ public class HANLinkedList<T> implements IHANLinkedList<T> {
         if (pos < 0 || pos >= size) {
             throw new IndexOutOfBoundsException();
         }
-        ListNode<T> currentNode = head;
+        HANLinkedListNode<T> currentNode = head;
         for (int i = 0; i < pos; i++) {
             currentNode = currentNode.getNext();
         }
-        ListNode<T> nodeToDelete = currentNode.getNext();
+        HANLinkedListNode<T> nodeToDelete = currentNode.getNext();
         currentNode.setNext(nodeToDelete.getNext());
         size--;
     }
@@ -65,7 +65,7 @@ public class HANLinkedList<T> implements IHANLinkedList<T> {
         if (pos < 0 || pos >= size) {
             throw new IndexOutOfBoundsException();
         }
-        ListNode<T> currentNode = head;
+        HANLinkedListNode<T> currentNode = head;
         for (int i = 0; i <= pos; i++) {
             currentNode = currentNode.getNext();
         }
