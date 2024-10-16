@@ -13,7 +13,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 
 public class Evaluator implements Transform {
-
     private IHANLinkedList<HashMap<String, Literal>> variableValues;
 
     public Evaluator() {
@@ -23,8 +22,31 @@ public class Evaluator implements Transform {
     @Override
     public void apply(AST ast) {
         //variableValues = new HANLinkedList<>();
-
+        applyStylesheet(ast.root);
     }
 
-    
+    private void applyStylesheet(Stylesheet stylesheet) {
+        for (ASTNode child : stylesheet.getChildren()) {
+            if (child instanceof Stylerule) {
+                applyStylerule((Stylerule) child);
+            }
+        }
+    }
+
+    private void applyStylerule(Stylerule stylerule) {
+        for (ASTNode child : stylerule.getChildren()) {
+            if (child instanceof Declaration) {
+                applyDeclaration((Declaration) child);
+            }
+        }
+    }
+
+    private void applyDeclaration(Declaration declaration) {
+        declaration.expression = evaluateExpression(declaration.expression);
+    }
+
+    private Expression evaluateExpression(Expression expression) {
+        // FIXME
+        return expression;
+    }
 }
