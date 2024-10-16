@@ -37,6 +37,7 @@ public class Checker {
 
     private void checkDeclaration(Declaration declaration) {
         checkPropertyName(declaration.property);
+        checkExpression(declaration.expression);
         if (List.of("width", "height").contains(declaration.property.name)) {
             if (!(declaration.expression instanceof PixelLiteral) && !(declaration.expression instanceof PercentageLiteral)) {
                 declaration.expression.setError("Invalid type for property '" + declaration.property.name + "'");
@@ -52,6 +53,25 @@ public class Checker {
     private void checkPropertyName(PropertyName property) {
         if (!List.of("width", "height", "color", "background-color").contains(property.name)) {
             property.setError("Invalid property '" + property.name + "'");
+        }
+    }
+
+    private void checkExpression(Expression expression) {
+        if (expression instanceof Operation) {
+            checkOperation((Operation) expression);
+        }
+    }
+
+    private void checkOperation(Operation expression) {
+        checkExpressionDoesNotContainColor(expression.lhs);
+        checkExpressionDoesNotContainColor(expression.rhs);
+    }
+
+    private void checkExpressionDoesNotContainColor(Expression expression) {
+        if (expression instanceof ColorLiteral) {
+            expression.setError("Cannot use color literals in operations");
+        } else if (expression instanceof Operation) {
+            checkOperation((Operation) expression);
         }
     }
 }
