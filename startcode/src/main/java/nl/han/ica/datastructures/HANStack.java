@@ -6,14 +6,7 @@ public class HANStack<T> implements IHANStack<T> {
     private final IHANLinkedList<T> items;
 
     public HANStack() {
-        this(new HANLinkedList<>());
-    }
-
-    /**
-     * Constructor for unit test mocking.
-     */
-    HANStack(IHANLinkedList<T> items) {
-        this.items = items;
+        this.items = new HANLinkedList<>();
     }
 
     @Override
