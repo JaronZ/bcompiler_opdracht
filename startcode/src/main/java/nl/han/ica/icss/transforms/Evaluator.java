@@ -6,11 +6,11 @@ import nl.han.ica.icss.ast.literals.PercentageLiteral;
 import nl.han.ica.icss.ast.literals.PixelLiteral;
 import nl.han.ica.icss.ast.literals.ScalarLiteral;
 import nl.han.ica.icss.ast.operations.AddOperation;
-import nl.han.ica.icss.ast.operations.MultiplyOperation;
 import nl.han.ica.icss.ast.operations.SubtractOperation;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
-import java.util.LinkedList;
+import java.util.function.BiFunction;
 
 public class Evaluator implements Transform {
     private IHANLinkedList<HashMap<String, Literal>> variableValues;
@@ -45,8 +45,43 @@ public class Evaluator implements Transform {
         declaration.expression = evaluateExpression(declaration.expression);
     }
 
-    private Expression evaluateExpression(Expression expression) {
-        // FIXME
-        return expression;
+    private Literal evaluateExpression(Expression expression) {
+        if (expression instanceof Literal) {
+            return (Literal) expression;
+        }
+        return evaluateOperation((Operation) expression);
+    }
+
+    private Literal evaluateOperation(Operation operation) {
+        Literal left = evaluateExpression(operation.lhs);
+        Literal right = evaluateExpression(operation.rhs);
+        if (operation instanceof AddOperation) {
+            return evaluateOperation(left, right, Integer::sum);
+        }
+        if (operation instanceof SubtractOperation) {
+            return evaluateOperation(left, right, (a, b) -> a - b);
+        }
+        return evaluateOperation(left, right, (a, b) -> a * b);
+    }
+
+    private Literal evaluateOperation(Literal left, Literal right, BiFunction<Integer, Integer, Integer> eval) {
+        int leftValue = getNumericLiteralValue(left);
+        int rightValue = getNumericLiteralValue(right);
+        int result = eval.apply(leftValue, rightValue);
+        try {
+            return left.getClass().getDeclaredConstructor(int.class).newInstance(result);
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private int getNumericLiteralValue(Literal literal) {
+        if (literal instanceof PercentageLiteral) {
+            return ((PercentageLiteral) literal).value;
+        }
+        if (literal instanceof PixelLiteral) {
+            return ((PixelLiteral) literal).value;
+        }
+        return ((ScalarLiteral) literal).value;
     }
 }
