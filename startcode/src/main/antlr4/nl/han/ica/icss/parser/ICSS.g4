@@ -48,8 +48,7 @@ ASSIGNMENT_OPERATOR: ':=';
 stylesheet: (stylerule | variableAssignment)* EOF;
 
 // Variables
-// TODO: mag in variable assignment alleen literals staan of ook expressions?
-variableAssignment: variableReference ASSIGNMENT_OPERATOR literal SEMICOLON;
+variableAssignment: variableReference ASSIGNMENT_OPERATOR expression SEMICOLON;
 variableReference: CAPITAL_IDENT;
 
 // Stylerules
@@ -66,14 +65,12 @@ selector: LOWER_IDENT # tagSelector
 ;
 
 // Expressions
-// TODO: mag ik op deze manier bepalen wat voor expression iets is?
 expression: expression MUL expression # multiplyOperation
     | expression PLUS expression # addOperation
     | expression MIN expression # subtractOperation
     | literal # literalExpression
     | variableReference # variableExpression
 ;
-// TODO: mag ik op deze manier bepalen wat voor literal iets is?
 literal: COLOR # colorLiteral
     | PIXELSIZE # pixelLiteral
     | PERCENTAGE # percentageLiteral
