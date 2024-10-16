@@ -165,6 +165,18 @@ public class ASTListener extends ICSSBaseListener {
 	}
 
 	@Override
+	public void enterPercentageLiteral(ICSSParser.PercentageLiteralContext ctx) {
+		PercentageLiteral literal = new PercentageLiteral(ctx.getText());
+		currentContainer.push(literal);
+	}
+
+	@Override
+	public void exitPercentageLiteral(ICSSParser.PercentageLiteralContext ctx) {
+		PercentageLiteral literal = (PercentageLiteral) currentContainer.pop();
+		currentContainer.peek().addChild(literal);
+	}
+
+	@Override
 	public void enterVariableAssignment(ICSSParser.VariableAssignmentContext ctx) {
 		VariableAssignment assignment = new VariableAssignment();
 		currentContainer.push(assignment);
