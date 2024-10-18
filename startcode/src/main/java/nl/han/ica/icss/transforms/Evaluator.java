@@ -69,10 +69,17 @@ public class Evaluator implements Transform {
         int rightValue = getNumericLiteralValue(right);
         int result = eval.apply(leftValue, rightValue);
         try {
-            return left.getClass().getDeclaredConstructor(int.class).newInstance(result);
+            return leftUnlessScalar(left, right).getClass().getDeclaredConstructor(int.class).newInstance(result);
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private Literal leftUnlessScalar(Literal left, Literal right) {
+        if (left instanceof ScalarLiteral) {
+            return right;
+        }
+        return left;
     }
 
     private int getNumericLiteralValue(Literal literal) {
