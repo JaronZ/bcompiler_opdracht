@@ -14,21 +14,34 @@ public class Generator {
 		for (ASTNode child : stylesheet.getChildren()) {
 			if (child instanceof Stylerule) {
 				generateStylerule((Stylerule) child, sb);
+				sb.append("\n");
 			}
 		}
 	}
 
 	private void generateStylerule(Stylerule stylerule, StringBuilder sb) {
-		sb.append(stylerule.selectors.get(0));
+		for (Selector selector : stylerule.selectors) {
+			sb.append(selector);
+		}
 		sb.append(" {\n");
 		for (ASTNode child : stylerule.body) {
-			sb.append("\t");
+			sb.append("  ");
 			generateDeclaration((Declaration) child, sb);
+			sb.append("\n");
 		}
-		sb.append("\n}");
+		sb.append("}");
 	}
 
 	private void generateDeclaration(Declaration declaration, StringBuilder sb) {
-		sb.append("Declaration");
+		sb.append(declaration.property.name);
+		sb.append(": ");
+		generateExpression(declaration.expression, sb);
+		sb.append(";");
+	}
+
+	private void generateExpression(Expression expression, StringBuilder sb) {
+		if (expression instanceof Literal) {
+			sb.append(((Literal) expression).toStringRepresentation());
+		}
 	}
 }
