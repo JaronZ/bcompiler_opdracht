@@ -39,7 +39,7 @@ public class Checker {
         checkPropertyName(declaration.property);
         checkExpression(declaration.expression);
         if (List.of("width", "height").contains(declaration.property.name)) {
-            if (!(declaration.expression instanceof PixelLiteral) && !(declaration.expression instanceof PercentageLiteral)) {
+            if (!(declaration.expression instanceof PixelLiteral) && !(declaration.expression instanceof PercentageLiteral) && !(declaration.expression instanceof Operation)) {
                 declaration.expression.setError("Invalid type for property '" + declaration.property.name + "'");
             }
         }
