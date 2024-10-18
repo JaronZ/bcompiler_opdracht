@@ -52,7 +52,7 @@ variableAssignment: variableReference ASSIGNMENT_OPERATOR expression SEMICOLON;
 variableReference: CAPITAL_IDENT;
 
 // Stylerules
-stylerule: selector OPEN_BRACE (declaration|ifClause)* CLOSE_BRACE;
+stylerule: selector OPEN_BRACE (declaration|ifClause|variableAssignment)* CLOSE_BRACE;
 
 // Declaration
 declaration: propertyName COLON expression SEMICOLON;
@@ -80,5 +80,6 @@ literal: COLOR # colorLiteral
 ;
 
 // If clauses
-ifClause: IF BOX_BRACKET_OPEN expression BOX_BRACKET_CLOSE OPEN_BRACE (declaration|ifClause)* CLOSE_BRACE elseClause?;
-elseClause: ELSE OPEN_BRACE (declaration|ifClause)* CLOSE_BRACE;
+ifClause: IF BOX_BRACKET_OPEN expression BOX_BRACKET_CLOSE
+    OPEN_BRACE (declaration|ifClause|variableAssignment)* CLOSE_BRACE elseClause?;
+elseClause: ELSE OPEN_BRACE (declaration|ifClause|variableAssignment)* CLOSE_BRACE;
