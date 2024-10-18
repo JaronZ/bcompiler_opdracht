@@ -15,6 +15,10 @@ public class ColorLiteral extends Literal {
         return "Color literal (" + value + ")";
     }
 
+    @Override
+    public String toStringRepresentation() {
+        return value;
+    }
 
     @Override
     public boolean equals(Object o) {

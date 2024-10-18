@@ -19,6 +19,11 @@ public class BoolLiteral extends Literal {
     }
 
     @Override
+    public String toStringRepresentation() {
+        return value ? "TRUE" : "FALSE";
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
