@@ -37,4 +37,12 @@ public class EvaluatorTest {
         sut.apply(act);
         assertEquals(exp, act);
     }
+
+    @Test
+    void testLevel3() {
+        AST exp = Fixtures.transformedLevel3();
+        AST act = Fixtures.checkedLevel3();
+        sut.apply(act);
+        assertEquals(exp, act);
+    }
 }
