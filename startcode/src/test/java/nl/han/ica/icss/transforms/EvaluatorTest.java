@@ -45,4 +45,12 @@ public class EvaluatorTest {
         sut.apply(act);
         assertEquals(exp, act);
     }
+
+    @Test
+    void testScopes() {
+        AST exp = Fixtures.transformedScopes();
+        AST act = Fixtures.checkedScopes();
+        sut.apply(act);
+        assertEquals(exp, act);
+    }
 }
