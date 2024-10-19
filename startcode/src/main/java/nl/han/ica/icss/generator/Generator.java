@@ -25,9 +25,11 @@ public class Generator {
 		}
 		sb.append(" {\n");
 		for (ASTNode child : stylerule.body) {
-			sb.append("  ");
-			generateDeclaration((Declaration) child, sb);
-			sb.append("\n");
+			if (child instanceof Declaration) {
+				sb.append("  ");
+				generateDeclaration((Declaration) child, sb);
+				sb.append("\n");
+			}
 		}
 		sb.append("}");
 	}
