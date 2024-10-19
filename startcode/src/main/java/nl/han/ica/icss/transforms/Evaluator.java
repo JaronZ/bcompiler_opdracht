@@ -44,6 +44,7 @@ public class Evaluator implements Transform {
     }
 
     private void applyStylerule(Stylerule stylerule) {
+        variableValues.addFirst(new HashMap<>());
         for (ASTNode child : stylerule.getChildren()) {
             if (child instanceof Declaration) {
                 applyDeclaration((Declaration) child);
@@ -51,6 +52,7 @@ public class Evaluator implements Transform {
                 applyVariableAssignment((VariableAssignment) child);
             }
         }
+        variableValues.removeFirst();
     }
 
     private void applyDeclaration(Declaration declaration) {
