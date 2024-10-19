@@ -102,11 +102,11 @@ public class Checker {
     }
 
     private void checkOperation(Operation expression) {
-        checkExpressionDoesNotContainColor(expression.lhs);
-        checkExpressionDoesNotContainColor(expression.rhs);
+        checkOperationHandSide(expression.lhs);
+        checkOperationHandSide(expression.rhs);
     }
 
-    private void checkExpressionDoesNotContainColor(Expression expression) {
+    private void checkOperationHandSide(Expression expression) {
         if (expression instanceof ColorLiteral) {
             expression.setError("Cannot use color literals in operations");
         } else if (expression instanceof Operation) {
