@@ -1,10 +1,9 @@
 package nl.han.ica.icss.checker;
 
+import nl.han.ica.datastructures.HANLinkedList;
 import nl.han.ica.datastructures.IHANLinkedList;
 import nl.han.ica.icss.ast.*;
-import nl.han.ica.icss.ast.literals.ColorLiteral;
-import nl.han.ica.icss.ast.literals.PercentageLiteral;
-import nl.han.ica.icss.ast.literals.PixelLiteral;
+import nl.han.ica.icss.ast.literals.*;
 import nl.han.ica.icss.ast.types.ExpressionType;
 
 import java.util.HashMap;
@@ -15,16 +14,44 @@ public class Checker {
     private IHANLinkedList<HashMap<String, ExpressionType>> variableTypes;
 
     public void check(AST ast) {
-        // variableTypes = new HANLinkedList<>();
+        variableTypes = new HANLinkedList<>();
         checkStylesheet(ast.root);
     }
 
     private void checkStylesheet(Stylesheet stylesheet) {
+        variableTypes.addFirst(new HashMap<>());
         for (ASTNode child : stylesheet.getChildren()) {
             if (child instanceof Stylerule) {
                 checkStylerule((Stylerule) child);
+            } else if (child instanceof VariableAssignment) {
+                checkVariableAssignment((VariableAssignment) child);
             }
         }
+    }
+
+    private void checkVariableAssignment(VariableAssignment assignment) {
+        checkExpression(assignment.expression);
+        ExpressionType type = getExpressionType(assignment.expression);
+        variableTypes.getFirst().put(assignment.name.name, type);
+    }
+
+    private ExpressionType getExpressionType(Expression expression) {
+        if (expression instanceof BoolLiteral) {
+            return ExpressionType.BOOL;
+        }
+        if (expression instanceof ColorLiteral) {
+            return ExpressionType.COLOR;
+        }
+        if (expression instanceof PercentageLiteral) {
+            return ExpressionType.PERCENTAGE;
+        }
+        if (expression instanceof PixelLiteral) {
+            return ExpressionType.PIXEL;
+        }
+        if (expression instanceof ScalarLiteral) {
+            return ExpressionType.SCALAR;
+        }
+        return null;
     }
 
     private void checkStylerule(Stylerule stylerule) {
@@ -50,6 +77,16 @@ public class Checker {
         }
     }
 
+    private void checkVariableReference(VariableReference reference) {
+        for (int i = 0; i < variableTypes.getSize(); i++) {
+            HashMap<String, ExpressionType> scope = variableTypes.get(i);
+            if (scope.containsKey(reference.name)) {
+                return;
+            }
+        }
+        reference.setError("Variable '" + reference.name + "' used before assignment");
+    }
+
     private void checkPropertyName(PropertyName property) {
         if (!List.of("width", "height", "color", "background-color").contains(property.name)) {
             property.setError("Invalid property '" + property.name + "'");
@@ -57,7 +94,9 @@ public class Checker {
     }
 
     private void checkExpression(Expression expression) {
-        if (expression instanceof Operation) {
+        if (expression instanceof VariableReference) {
+            checkVariableReference((VariableReference) expression);
+        } else if (expression instanceof Operation) {
             checkOperation((Operation) expression);
         }
     }
