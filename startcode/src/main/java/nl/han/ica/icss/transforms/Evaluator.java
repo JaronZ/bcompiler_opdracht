@@ -47,6 +47,8 @@ public class Evaluator implements Transform {
         for (ASTNode child : stylerule.getChildren()) {
             if (child instanceof Declaration) {
                 applyDeclaration((Declaration) child);
+            } else if (child instanceof VariableAssignment) {
+                applyVariableAssignment((VariableAssignment) child);
             }
         }
     }
