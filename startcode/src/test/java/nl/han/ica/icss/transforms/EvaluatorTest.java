@@ -1,0 +1,40 @@
+package nl.han.ica.icss.transforms;
+
+import nl.han.ica.icss.ast.AST;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+public class EvaluatorTest {
+    private Evaluator sut;
+
+    @BeforeEach
+    void setup() {
+        sut = new Evaluator();
+    }
+
+    @Test
+    void testLevel0() {
+        AST exp = Fixtures.transformedLevel0();
+        AST act = Fixtures.checkedLevel0();
+        sut.apply(act);
+        assertEquals(exp, act);
+    }
+
+    @Test
+    void testLevel1() {
+        AST exp = Fixtures.transformedLevel1();
+        AST act = Fixtures.checkedLevel1();
+        sut.apply(act);
+        assertEquals(exp, act);
+    }
+
+    @Test
+    void testLevel2() {
+        AST exp = Fixtures.transformedLevel2();
+        AST act = Fixtures.checkedLevel2();
+        sut.apply(act);
+        assertEquals(exp, act);
+    }
+}
