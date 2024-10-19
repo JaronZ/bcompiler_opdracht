@@ -26,4 +26,11 @@ public class GeneratorTest {
         String act = sut.generate(Fixtures.transformedLevel3());
         assertEquals(exp, act);
     }
+
+    @Test
+    void testScopes() {
+        String exp = Fixtures.generatedScopes();
+        String act = sut.generate(Fixtures.transformedScopes());
+        assertEquals(exp, act);
+    }
 }

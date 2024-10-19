@@ -5,6 +5,7 @@ import nl.han.ica.icss.ast.Declaration;
 import nl.han.ica.icss.ast.Stylerule;
 import nl.han.ica.icss.ast.Stylesheet;
 import nl.han.ica.icss.ast.literals.ColorLiteral;
+import nl.han.ica.icss.ast.literals.PercentageLiteral;
 import nl.han.ica.icss.ast.literals.PixelLiteral;
 import nl.han.ica.icss.ast.selectors.ClassSelector;
 import nl.han.ica.icss.ast.selectors.IdSelector;
@@ -158,4 +159,83 @@ public class Fixtures {
                 "}\n"
         ;
     }
+
+	public static AST transformedScopes() {
+		Stylesheet stylesheet = new Stylesheet();
+
+		/*
+		p {
+			width: 28%;
+			height: 18px;
+			color: #ffffff;
+		}
+		 */
+		stylesheet.addChild(new Stylerule()
+				.addChild(new TagSelector("p"))
+				.addChild(new Declaration("width")
+						.addChild(new PercentageLiteral("28%")))
+				.addChild(new Declaration("height")
+						.addChild(new PixelLiteral("18px")))
+				.addChild(new Declaration("color")
+						.addChild(new ColorLiteral("#ffffff"))));
+		/*
+		span {
+			width: 25%;
+			height: 10px;
+			color: #000000;
+			background-color: #cccccc;
+		}
+		 */
+		stylesheet.addChild(new Stylerule()
+				.addChild(new TagSelector("span"))
+				.addChild(new Declaration("width")
+						.addChild(new PercentageLiteral("25%")))
+				.addChild(new Declaration("height")
+						.addChild(new PixelLiteral("10px")))
+				.addChild(new Declaration("color")
+						.addChild(new ColorLiteral("#000000")))
+				.addChild(new Declaration("background-color")
+						.addChild(new ColorLiteral("#cccccc"))));
+		/*
+		div {
+			width: 17px;
+			height: 11px;
+			background-color: #abcdef;
+			color: #012345;
+		}
+		 */
+		stylesheet.addChild(new Stylerule()
+				.addChild(new TagSelector("div"))
+				.addChild(new Declaration("width")
+						.addChild(new PixelLiteral("17px")))
+				.addChild(new Declaration("height")
+						.addChild(new PixelLiteral("11px")))
+				.addChild(new Declaration("background-color")
+						.addChild(new ColorLiteral("#abcdef")))
+				.addChild(new Declaration("color")
+						.addChild(new ColorLiteral("#012345"))));
+
+		return new AST(stylesheet);
+	}
+
+	public static String generatedScopes() {
+		return  "p {\n" +
+				"  width: 28%;\n" +
+				"  height: 18px;\n" +
+				"  color: #ffffff;\n" +
+				"}\n" +
+				"span {\n" +
+				"  width: 25%;\n" +
+				"  height: 10px;\n" +
+				"  color: #000000;\n" +
+				"  background-color: #cccccc;\n" +
+				"}\n" +
+				"div {\n" +
+				"  width: 17px;\n" +
+				"  height: 11px;\n" +
+				"  background-color: #abcdef;\n" +
+				"  color: #012345;\n" +
+				"}\n"
+		;
+	}
 }
