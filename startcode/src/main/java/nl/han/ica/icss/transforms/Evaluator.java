@@ -1,5 +1,6 @@
 package nl.han.ica.icss.transforms;
 
+import nl.han.ica.datastructures.HANLinkedList;
 import nl.han.ica.datastructures.IHANLinkedList;
 import nl.han.ica.icss.ast.*;
 import nl.han.ica.icss.ast.literals.PercentageLiteral;
@@ -16,21 +17,30 @@ public class Evaluator implements Transform {
     private IHANLinkedList<HashMap<String, Literal>> variableValues;
 
     public Evaluator() {
-        //variableValues = new HANLinkedList<>();
+        variableValues = new HANLinkedList<>();
     }
 
     @Override
     public void apply(AST ast) {
-        //variableValues = new HANLinkedList<>();
+        variableValues = new HANLinkedList<>();
         applyStylesheet(ast.root);
     }
 
     private void applyStylesheet(Stylesheet stylesheet) {
+        variableValues.addFirst(new HashMap<>());
         for (ASTNode child : stylesheet.getChildren()) {
             if (child instanceof Stylerule) {
                 applyStylerule((Stylerule) child);
+            } else if (child instanceof VariableAssignment) {
+                applyVariableAssignment((VariableAssignment) child);
             }
         }
+        variableValues.removeFirst();
+    }
+
+    private void applyVariableAssignment(VariableAssignment assignment) {
+        Literal value = evaluateExpression(assignment.expression);
+        variableValues.getFirst().put(assignment.name.name, value);
     }
 
     private void applyStylerule(Stylerule stylerule) {
@@ -48,8 +58,20 @@ public class Evaluator implements Transform {
     private Literal evaluateExpression(Expression expression) {
         if (expression instanceof Literal) {
             return (Literal) expression;
+        } else if (expression instanceof VariableReference) {
+            return evaluateVariableReference((VariableReference) expression);
         }
         return evaluateOperation((Operation) expression);
+    }
+
+    private Literal evaluateVariableReference(VariableReference reference) {
+        for (int i = 0; i < variableValues.getSize(); i++) {
+            HashMap<String, Literal> scope = variableValues.get(i);
+            if (scope.containsKey(reference.name)) {
+                return scope.get(reference.name);
+            }
+        }
+        return null;
     }
 
     private Literal evaluateOperation(Operation operation) {
