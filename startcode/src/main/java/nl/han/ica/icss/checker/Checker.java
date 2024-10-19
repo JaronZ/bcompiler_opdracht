@@ -27,6 +27,7 @@ public class Checker {
                 checkVariableAssignment((VariableAssignment) child);
             }
         }
+        variableTypes.removeFirst();
     }
 
     private void checkVariableAssignment(VariableAssignment assignment) {
