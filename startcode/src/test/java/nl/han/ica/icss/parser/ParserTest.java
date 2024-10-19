@@ -81,4 +81,11 @@ class ParserTest {
 		AST exp = Fixtures.uncheckedLevel3();
 		assertEquals(exp,sut);
 	}
+
+	@Test
+	void testParseScopes() throws IOException {
+		AST sut = parseTestFile("scopes.icss");
+		AST exp = Fixtures.uncheckedScopes();
+		assertEquals(exp,sut);
+	}
 }

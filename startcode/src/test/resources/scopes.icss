@@ -1,0 +1,28 @@
+ParWidth := 28%;
+ParHeight := 13px + 5px;
+SpanWidth := 3 * 10% - 5%;
+SpanColor := #000000;
+DivSize := 5px + 3px * 4;
+DivColor := #abcdef;
+
+p {
+    width: ParWidth;
+    height: ParHeight;
+    color: #ffffff;
+}
+
+span {
+    width: SpanWidth;
+    height: 10px;
+    color: SpanColor;
+    background-color: #cccccc;
+}
+
+div {
+    width: DivSize;
+    DivSize := 11px;
+    height: DivSize;
+    background-color: DivColor;
+    DivColor := #012345;
+    color: DivColor;
+}
