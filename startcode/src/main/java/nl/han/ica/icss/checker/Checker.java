@@ -56,11 +56,13 @@ public class Checker {
     }
 
     private void checkStylerule(Stylerule stylerule) {
+        variableTypes.addFirst(new HashMap<>());
         for (ASTNode child : stylerule.getChildren()) {
             if (child instanceof Declaration) {
                 checkDeclaration((Declaration) child);
             }
         }
+        variableTypes.removeFirst();
     }
 
     private void checkDeclaration(Declaration declaration) {
