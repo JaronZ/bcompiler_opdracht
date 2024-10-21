@@ -3,6 +3,7 @@ package nl.han.ica.icss.transforms;
 import nl.han.ica.datastructures.HANLinkedList;
 import nl.han.ica.datastructures.IHANLinkedList;
 import nl.han.ica.icss.ast.*;
+import nl.han.ica.icss.ast.literals.BoolLiteral;
 import nl.han.ica.icss.ast.literals.PercentageLiteral;
 import nl.han.ica.icss.ast.literals.PixelLiteral;
 import nl.han.ica.icss.ast.literals.ScalarLiteral;
@@ -10,7 +11,9 @@ import nl.han.ica.icss.ast.operations.AddOperation;
 import nl.han.ica.icss.ast.operations.SubtractOperation;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.function.BiFunction;
 
 public class Evaluator implements Transform {
@@ -45,14 +48,38 @@ public class Evaluator implements Transform {
 
     private void applyStylerule(Stylerule stylerule) {
         variableValues.addFirst(new HashMap<>());
-        for (ASTNode child : stylerule.getChildren()) {
+        applyStyleruleBody(stylerule.body);
+        variableValues.removeFirst();
+    }
+
+    private List<ASTNode> evaluateIfClause(IfClause ifClause) {
+        BoolLiteral result = (BoolLiteral) evaluateExpression(ifClause.conditionalExpression);
+        if (result.value) {
+            return applyStyleruleBody(ifClause.body);
+        }
+        if (ifClause.elseClause != null) {
+            return applyStyleruleBody(ifClause.elseClause.body);
+        }
+        return new ArrayList<>();
+    }
+
+    private List<ASTNode> applyStyleruleBody(List<ASTNode> body) {
+        for (ASTNode child : List.copyOf(body)) {
             if (child instanceof Declaration) {
                 applyDeclaration((Declaration) child);
             } else if (child instanceof VariableAssignment) {
                 applyVariableAssignment((VariableAssignment) child);
+            } else if (child instanceof IfClause) {
+                applyIfClause((IfClause) child, body);
             }
         }
-        variableValues.removeFirst();
+        return body;
+    }
+
+    private void applyIfClause(IfClause ifClause, List<ASTNode> body) {
+        int index = body.indexOf(ifClause);
+        body.addAll(index, evaluateIfClause(ifClause));
+        body.remove(ifClause);
     }
 
     private void applyDeclaration(Declaration declaration) {
