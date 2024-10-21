@@ -66,8 +66,8 @@ selector: LOWER_IDENT # tagSelector
 
 // Expressions
 expression: expression MUL expression # multiplyOperation
-    | expression PLUS expression # addOperation
-    | expression MIN expression # subtractOperation
+    // Merged to make sure neither plus nor minus has precedence over the other
+    | expression operator = (PLUS|MIN) expression # additiveOperation
     | literal # literalExpression
     | variableReference # variableExpression
 ;
