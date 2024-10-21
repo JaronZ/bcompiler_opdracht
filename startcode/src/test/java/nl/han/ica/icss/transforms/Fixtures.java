@@ -440,7 +440,7 @@ public class Fixtures {
          */
         stylesheet.addChild(new VariableAssignment()
                         .addChild(new VariableReference("ParWidth"))
-                        .addChild(new PercentageLiteral("28%"))
+                        .addChild(new PercentageLiteral("28%")))
                 .addChild(new VariableAssignment()
                         .addChild(new VariableReference("ParHeight"))
                         .addChild(new AddOperation()
@@ -465,7 +465,7 @@ public class Fixtures {
                                         .addChild(new ScalarLiteral(4)))))
                 .addChild(new VariableAssignment()
                         .addChild(new VariableReference("DivColor"))
-                        .addChild(new ColorLiteral("#abcdef"))));
+                        .addChild(new ColorLiteral("#abcdef")));
         /*
         p {
             width: ParWidth;
@@ -542,7 +542,7 @@ public class Fixtures {
          */
         stylesheet.addChild(new VariableAssignment()
                         .addChild(new VariableReference("ParWidth"))
-                        .addChild(new PercentageLiteral("28%"))
+                        .addChild(new PercentageLiteral("28%")))
                 .addChild(new VariableAssignment()
                         .addChild(new VariableReference("ParHeight"))
                         .addChild(new AddOperation()
@@ -567,7 +567,7 @@ public class Fixtures {
                                         .addChild(new ScalarLiteral(4)))))
                 .addChild(new VariableAssignment()
                         .addChild(new VariableReference("DivColor"))
-                        .addChild(new ColorLiteral("#abcdef"))));
+                        .addChild(new ColorLiteral("#abcdef")));
         /*
         p {
             width: 28%;
