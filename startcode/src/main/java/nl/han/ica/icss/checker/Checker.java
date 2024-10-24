@@ -205,13 +205,17 @@ public class Checker {
     }
 
     private void checkMultiplicativeOperation(Operation operation) {
-        if (!(operation.lhs instanceof ScalarLiteral || operation.rhs instanceof ScalarLiteral)) {
-            operation.setError("Cannot multiply or divide without one scalar");
+        ExpressionType left = getExpressionType(operation.lhs);
+        ExpressionType right = getExpressionType(operation.rhs);
+        if (left != ExpressionType.SCALAR && right != ExpressionType.SCALAR) {
+            operation.setError("Cannot multiply non-scalars");
         }
     }
 
     private void checkAdditiveOperation(Operation operation) {
-        if (operation.lhs.getClass() != operation.rhs.getClass()) {
+        ExpressionType left = getExpressionType(operation.lhs);
+        ExpressionType right = getExpressionType(operation.rhs);
+        if (left != right) {
             operation.setError("Cannot add or subtract different types");
         }
     }
