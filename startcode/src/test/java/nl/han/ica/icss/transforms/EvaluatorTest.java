@@ -53,4 +53,12 @@ public class EvaluatorTest {
         sut.apply(act);
         assertEquals(exp, act);
     }
+
+    @Test
+    void testExpressions() {
+        AST exp = Fixtures.transformedExpressions();
+        AST act = Fixtures.checkedExpressions();
+        sut.apply(act);
+        assertEquals(exp, act);
+    }
 }

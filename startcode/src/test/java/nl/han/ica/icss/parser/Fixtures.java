@@ -426,4 +426,166 @@ public class Fixtures {
 
 		return new AST(stylesheet);
 	}
+
+	public static AST uncheckedExpressions() {
+		Stylesheet stylesheet = new Stylesheet();
+
+		/*
+		A := TRUE;
+		B := #ffffff;
+		C := 14%;
+		D := B;
+		E := 3% + 4%;
+		F := 3 + 4;
+		G := 3px - 4px;
+		H := 3 * 4;
+		I := 3 * 4px;
+		J := 3% * 4;
+		 */
+		stylesheet.addChild(new VariableAssignment()
+						.addChild(new VariableReference("A"))
+						.addChild(new BoolLiteral(true)))
+				.addChild(new VariableAssignment()
+						.addChild(new VariableReference("B"))
+						.addChild(new ColorLiteral("#ffffff")))
+				.addChild(new VariableAssignment()
+						.addChild(new VariableReference("C"))
+						.addChild(new PercentageLiteral("14%")))
+				.addChild(new VariableAssignment()
+						.addChild(new VariableReference("D"))
+						.addChild(new VariableReference("B")))
+				.addChild(new VariableAssignment()
+						.addChild(new VariableReference("E"))
+						.addChild(new AddOperation()
+								.addChild(new PercentageLiteral("3%"))
+								.addChild(new PercentageLiteral("4%"))))
+				.addChild(new VariableAssignment()
+						.addChild(new VariableReference("F"))
+						.addChild(new AddOperation()
+								.addChild(new ScalarLiteral(3))
+								.addChild(new ScalarLiteral(4))))
+				.addChild(new VariableAssignment()
+						.addChild(new VariableReference("G"))
+						.addChild(new SubtractOperation()
+								.addChild(new PixelLiteral("3px"))
+								.addChild(new PixelLiteral("4px"))))
+				.addChild(new VariableAssignment()
+						.addChild(new VariableReference("H"))
+						.addChild(new MultiplyOperation()
+								.addChild(new ScalarLiteral(3))
+								.addChild(new ScalarLiteral(4))))
+				.addChild(new VariableAssignment()
+						.addChild(new VariableReference("I"))
+						.addChild(new MultiplyOperation()
+								.addChild(new ScalarLiteral(3))
+								.addChild(new PixelLiteral("4px"))))
+				.addChild(new VariableAssignment()
+						.addChild(new VariableReference("J"))
+						.addChild(new MultiplyOperation()
+								.addChild(new PercentageLiteral("3%"))
+								.addChild(new ScalarLiteral(4))));
+		/*
+		p {
+			color: B;
+			background-color: D;
+			width: 5px + 6px;
+			height: 3% - 1%;
+		}
+		 */
+		stylesheet.addChild(new Stylerule()
+				.addChild(new TagSelector("p"))
+				.addChild(new Declaration("color")
+						.addChild(new VariableReference("B")))
+				.addChild(new Declaration("background-color")
+						.addChild(new VariableReference("D")))
+				.addChild(new Declaration("width")
+						.addChild(new AddOperation()
+								.addChild(new PixelLiteral("5px"))
+								.addChild(new PixelLiteral("6px"))))
+				.addChild(new Declaration("height")
+						.addChild(new SubtractOperation()
+								.addChild(new PercentageLiteral("3%"))
+								.addChild(new PercentageLiteral("1%")))));
+		/*
+		span {
+			width: 5% * F + J;
+			height: G;
+		}
+		 */
+		stylesheet.addChild(new Stylerule()
+				.addChild(new TagSelector("span"))
+				.addChild(new Declaration("width")
+						.addChild(new AddOperation()
+								.addChild(new MultiplyOperation()
+										.addChild(new PercentageLiteral("5%"))
+										.addChild(new VariableReference("F")))
+								.addChild(new VariableReference("J"))))
+				.addChild(new Declaration("height")
+						.addChild(new VariableReference("G"))));
+		/*
+		div {
+			width: H * 4 * 2%;
+			height: 3 * 4px;
+		}
+		 */
+		stylesheet.addChild(new Stylerule()
+				.addChild(new TagSelector("div"))
+				.addChild(new Declaration("width")
+						.addChild(new MultiplyOperation()
+								.addChild(new MultiplyOperation()
+										.addChild(new VariableReference("H"))
+										.addChild(new ScalarLiteral(4)))
+								.addChild(new PercentageLiteral("2%"))))
+				.addChild(new Declaration("height")
+						.addChild(new MultiplyOperation()
+								.addChild(new ScalarLiteral(3))
+								.addChild(new PixelLiteral("4px")))));
+		/*
+		.menu {
+			width: G - 2px;
+			if [A] {
+				height: 2% + C + 6%;
+			} else {
+				height: C - E;
+			}
+		}
+		 */
+		stylesheet.addChild(new Stylerule()
+				.addChild(new ClassSelector(".menu"))
+				.addChild(new Declaration("width")
+						.addChild(new SubtractOperation()
+								.addChild(new VariableReference("G"))
+								.addChild(new PixelLiteral("2px"))))
+				.addChild(new IfClause()
+						.addChild(new VariableReference("A"))
+						.addChild(new Declaration("height")
+								.addChild(new AddOperation()
+										.addChild(new AddOperation()
+												.addChild(new PercentageLiteral("2%"))
+												.addChild(new VariableReference("C")))
+										.addChild(new PercentageLiteral("6%"))))
+						.addChild(new ElseClause()
+								.addChild(new Declaration("height")
+										.addChild(new SubtractOperation()
+												.addChild(new VariableReference("C"))
+												.addChild(new VariableReference("E")))))));
+		/*
+		#menu {
+			width: I + 2 * 3px;
+			height: 5px;
+		}
+		 */
+		stylesheet.addChild(new Stylerule()
+				.addChild(new IdSelector("#menu"))
+				.addChild(new Declaration("width")
+						.addChild(new AddOperation()
+								.addChild(new VariableReference("I"))
+								.addChild(new MultiplyOperation()
+										.addChild(new ScalarLiteral(2))
+										.addChild(new PixelLiteral("3px")))))
+				.addChild(new Declaration("height")
+						.addChild(new PixelLiteral("5px"))));
+
+		return new AST(stylesheet);
+	}
 }

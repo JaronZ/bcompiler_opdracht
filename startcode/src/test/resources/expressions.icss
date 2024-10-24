@@ -1,0 +1,41 @@
+A := TRUE;
+B := #ffffff;
+C := 14%;
+D := B;
+E := 3% + 4%;
+F := 3 + 4;
+G := 3px - 4px;
+H := 3 * 4;
+I := 3 * 4px;
+J := 3% * 4;
+
+p {
+    color: B;
+    background-color: D;
+    width: 5px + 6px;
+    height: 3% - 1%;
+}
+
+span {
+    width: 5% * F + J;
+    height: G;
+}
+
+div {
+    width: H * 4 * 2%;
+    height: 3 * 4px;
+}
+
+.menu {
+    width: G - 2px;
+    if [A] {
+        height: 2% + C + 6%;
+    } else {
+        height: C - E;
+    }
+}
+
+#menu {
+    width: I + 2 * 3px;
+    height: 5px;
+}

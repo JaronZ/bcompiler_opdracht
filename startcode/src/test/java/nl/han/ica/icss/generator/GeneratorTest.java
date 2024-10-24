@@ -33,4 +33,11 @@ public class GeneratorTest {
         String act = sut.generate(Fixtures.transformedScopes());
         assertEquals(exp, act);
     }
+
+    @Test
+    void testExpressions() {
+        String exp = Fixtures.generatedExpressions();
+        String act = sut.generate(Fixtures.transformedExpressions());
+        assertEquals(exp, act);
+    }
 }

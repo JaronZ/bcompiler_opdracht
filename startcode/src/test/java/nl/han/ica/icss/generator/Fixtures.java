@@ -1,12 +1,10 @@
 package nl.han.ica.icss.generator;
 
-import nl.han.ica.icss.ast.AST;
-import nl.han.ica.icss.ast.Declaration;
-import nl.han.ica.icss.ast.Stylerule;
-import nl.han.ica.icss.ast.Stylesheet;
-import nl.han.ica.icss.ast.literals.ColorLiteral;
-import nl.han.ica.icss.ast.literals.PercentageLiteral;
-import nl.han.ica.icss.ast.literals.PixelLiteral;
+import nl.han.ica.icss.ast.*;
+import nl.han.ica.icss.ast.literals.*;
+import nl.han.ica.icss.ast.operations.AddOperation;
+import nl.han.ica.icss.ast.operations.MultiplyOperation;
+import nl.han.ica.icss.ast.operations.SubtractOperation;
 import nl.han.ica.icss.ast.selectors.ClassSelector;
 import nl.han.ica.icss.ast.selectors.IdSelector;
 import nl.han.ica.icss.ast.selectors.TagSelector;
@@ -235,6 +233,159 @@ public class Fixtures {
 				"  height: 11px;\n" +
 				"  background-color: #abcdef;\n" +
 				"  color: #012345;\n" +
+				"}\n"
+		;
+	}
+
+    public static AST transformedExpressions() {
+        Stylesheet stylesheet = new Stylesheet();
+
+		/*
+		A := TRUE;
+		B := #ffffff;
+		C := 14%;
+		D := B;
+		E := 3% + 4%;
+		F := 3 + 4;
+		G := 3px - 4px;
+		H := 3 * 4;
+		I := 3 * 4px;
+		J := 3% * 4;
+		 */
+		stylesheet.addChild(new VariableAssignment()
+						.addChild(new VariableReference("A"))
+						.addChild(new BoolLiteral(true)))
+				.addChild(new VariableAssignment()
+						.addChild(new VariableReference("B"))
+						.addChild(new ColorLiteral("#ffffff")))
+				.addChild(new VariableAssignment()
+						.addChild(new VariableReference("C"))
+						.addChild(new PercentageLiteral("14%")))
+				.addChild(new VariableAssignment()
+						.addChild(new VariableReference("D"))
+						.addChild(new VariableReference("B")))
+				.addChild(new VariableAssignment()
+						.addChild(new VariableReference("E"))
+						.addChild(new AddOperation()
+								.addChild(new PercentageLiteral("3%"))
+								.addChild(new PercentageLiteral("4%"))))
+				.addChild(new VariableAssignment()
+						.addChild(new VariableReference("F"))
+						.addChild(new AddOperation()
+								.addChild(new ScalarLiteral(3))
+								.addChild(new ScalarLiteral(4))))
+				.addChild(new VariableAssignment()
+						.addChild(new VariableReference("G"))
+						.addChild(new SubtractOperation()
+								.addChild(new PixelLiteral("3px"))
+								.addChild(new PixelLiteral("4px"))))
+				.addChild(new VariableAssignment()
+						.addChild(new VariableReference("H"))
+						.addChild(new MultiplyOperation()
+								.addChild(new ScalarLiteral(3))
+								.addChild(new ScalarLiteral(4))))
+				.addChild(new VariableAssignment()
+						.addChild(new VariableReference("I"))
+						.addChild(new MultiplyOperation()
+								.addChild(new ScalarLiteral(3))
+								.addChild(new PixelLiteral("4px"))))
+				.addChild(new VariableAssignment()
+						.addChild(new VariableReference("J"))
+						.addChild(new MultiplyOperation()
+								.addChild(new PercentageLiteral("3%"))
+								.addChild(new ScalarLiteral(4))));
+		/*
+		p {
+			color: #ffffff;
+			background-color: #ffffff;
+			width: 11px;
+			height: 2%;
+		}
+		 */
+		stylesheet.addChild(new Stylerule()
+				.addChild(new TagSelector("p"))
+				.addChild(new Declaration("color")
+						.addChild(new ColorLiteral("#ffffff")))
+				.addChild(new Declaration("background-color")
+						.addChild(new ColorLiteral("#ffffff")))
+				.addChild(new Declaration("width")
+						.addChild(new PixelLiteral("11px")))
+				.addChild(new Declaration("height")
+						.addChild(new PercentageLiteral("2%"))));
+		/*
+		span {
+			width: 47%;
+			height: -1px;
+		}
+		 */
+		stylesheet.addChild(new Stylerule()
+				.addChild(new TagSelector("span"))
+				.addChild(new Declaration("width")
+						.addChild(new PercentageLiteral("47%")))
+				.addChild(new Declaration("height")
+						.addChild(new PixelLiteral(-1))));
+		/*
+		div {
+			width: 96%;
+			height: 12px;
+		}
+		 */
+		stylesheet.addChild(new Stylerule()
+				.addChild(new TagSelector("div"))
+				.addChild(new Declaration("width")
+						.addChild(new PercentageLiteral("96%")))
+				.addChild(new Declaration("height")
+						.addChild(new PixelLiteral("12px"))));
+		/*
+		.menu {
+			width: -3px;
+			height: 22%;
+		}
+		 */
+		stylesheet.addChild(new Stylerule()
+				.addChild(new ClassSelector(".menu"))
+				.addChild(new Declaration("width")
+						.addChild(new PixelLiteral(-3)))
+				.addChild(new Declaration("height")
+						.addChild(new PercentageLiteral("22%"))));
+		/*
+		#menu {
+			width: 18px;
+			height: 5px;
+		}
+		 */
+		stylesheet.addChild(new Stylerule()
+				.addChild(new IdSelector("#menu"))
+				.addChild(new Declaration("width")
+						.addChild(new PixelLiteral("18px")))
+				.addChild(new Declaration("height")
+						.addChild(new PixelLiteral("5px"))));
+
+		return new AST(stylesheet);
+    }
+
+	public static String generatedExpressions() {
+		return  "p {\n" +
+				"  color: #ffffff;\n" +
+				"  background-color: #ffffff;\n" +
+				"  width: 11px;\n" +
+				"  height: 2%;\n" +
+				"}\n" +
+				"span {\n" +
+				"  width: 47%;\n" +
+				"  height: -1px;\n" +
+				"}\n" +
+				"div {\n" +
+				"  width: 96%;\n" +
+				"  height: 12px;\n" +
+				"}\n" +
+				".menu {\n" +
+				"  width: -3px;\n" +
+				"  height: 22%;\n" +
+				"}\n" +
+				"#menu {\n" +
+				"  width: 18px;\n" +
+				"  height: 5px;\n" +
 				"}\n"
 		;
 	}

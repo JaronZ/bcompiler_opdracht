@@ -88,4 +88,11 @@ class ParserTest {
 		AST exp = Fixtures.uncheckedScopes();
 		assertEquals(exp,sut);
 	}
+
+	@Test
+	void testParseExpressions() throws IOException {
+		AST sut = parseTestFile("expressions.icss");
+		AST exp = Fixtures.uncheckedExpressions();
+		assertEquals(exp,sut);
+	}
 }
