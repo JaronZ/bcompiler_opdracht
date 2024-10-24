@@ -57,37 +57,71 @@ public class Checker {
 
     private void checkStylerule(Stylerule stylerule) {
         variableTypes.addFirst(new HashMap<>());
-        for (ASTNode child : stylerule.getChildren()) {
+        checkStyleruleBody(stylerule.body);
+        variableTypes.removeFirst();
+    }
+
+    private void checkStyleruleBody(List<ASTNode> body) {
+        for (ASTNode child : body) {
             if (child instanceof Declaration) {
                 checkDeclaration((Declaration) child);
+            } else if (child instanceof IfClause) {
+                checkIfClause((IfClause) child);
             }
         }
-        variableTypes.removeFirst();
+    }
+
+    private void checkIfClause(IfClause ifClause) {
+        checkConditionalExpression(ifClause.conditionalExpression);
+        checkStyleruleBody(ifClause.body);
+        if (ifClause.elseClause != null) {
+            checkStyleruleBody(ifClause.elseClause.body);
+        }
+    }
+
+    private void checkConditionalExpression(Expression conditionalExpression) {
+        if (conditionalExpression instanceof Literal && !(conditionalExpression instanceof BoolLiteral)) {
+            conditionalExpression.setError("Invalid type for conditional. Expected boolean, got " + conditionalExpression.getClass().getSimpleName());
+        } else if (conditionalExpression instanceof VariableReference) {
+            checkVariableReference((VariableReference) conditionalExpression, ExpressionType.BOOL);
+        } else if (conditionalExpression instanceof Operation) {
+            conditionalExpression.setError("Invalid type for conditional. Expected boolean, got operation");
+        }
     }
 
     private void checkDeclaration(Declaration declaration) {
         checkPropertyName(declaration.property);
         checkExpression(declaration.expression);
-        if (List.of("width", "height").contains(declaration.property.name)) {
-            if (!(declaration.expression instanceof PixelLiteral) && !(declaration.expression instanceof PercentageLiteral) && !(declaration.expression instanceof Operation)) {
-                declaration.expression.setError("Invalid type for property '" + declaration.property.name + "'");
-            }
-        }
-        if (List.of("color", "background-color").contains(declaration.property.name)) {
-            if (!(declaration.expression instanceof ColorLiteral)) {
-                declaration.expression.setError("Invalid type for property '" + declaration.property.name + "'");
-            }
-        }
+//        if (List.of("width", "height").contains(declaration.property.name)) {
+//            if (!(declaration.expression instanceof PixelLiteral) && !(declaration.expression instanceof PercentageLiteral) && !(declaration.expression instanceof Operation)) {
+//                declaration.expression.setError("Invalid type for property '" + declaration.property.name + "'");
+//            }
+//        }
+//        if (List.of("color", "background-color").contains(declaration.property.name)) {
+//            if (!(declaration.expression instanceof ColorLiteral)) {
+//                declaration.expression.setError("Invalid type for property '" + declaration.property.name + "'");
+//            }
+//        }
     }
 
-    private void checkVariableReference(VariableReference reference) {
+    private void checkVariableReference(VariableReference reference, ExpressionType expectedType) {
         for (int i = 0; i < variableTypes.getSize(); i++) {
             HashMap<String, ExpressionType> scope = variableTypes.get(i);
             if (scope.containsKey(reference.name)) {
+                checkVariableReferenceType(reference, scope, expectedType);
                 return;
             }
         }
         reference.setError("Variable '" + reference.name + "' used before assignment");
+    }
+
+    private void checkVariableReferenceType(VariableReference reference, HashMap<String, ExpressionType> scope, ExpressionType expectedType) {
+        if (expectedType != null) {
+            ExpressionType type = scope.get(reference.name);
+            if (type != expectedType) {
+                reference.setError("Invalid type for variable '" + reference.name + "'. Expected " + expectedType + ", got " + type);
+            }
+        }
     }
 
     private void checkPropertyName(PropertyName property) {
@@ -98,7 +132,7 @@ public class Checker {
 
     private void checkExpression(Expression expression) {
         if (expression instanceof VariableReference) {
-            checkVariableReference((VariableReference) expression);
+            checkVariableReference((VariableReference) expression, null);
         } else if (expression instanceof Operation) {
             checkOperation((Operation) expression);
         }
