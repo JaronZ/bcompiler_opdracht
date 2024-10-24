@@ -141,6 +141,23 @@ public class Checker {
     private void checkOperation(Operation operation) {
         checkOperationHandSide(operation.lhs);
         checkOperationHandSide(operation.rhs);
+        if (operation instanceof AddOperation || operation instanceof SubtractOperation) {
+            checkAdditiveOperation(operation);
+        } else if (operation instanceof MultiplyOperation) {
+            checkMultiplicativeOperation(operation);
+        }
+    }
+
+    private void checkMultiplicativeOperation(Operation operation) {
+        if (!(operation.lhs instanceof ScalarLiteral || operation.rhs instanceof ScalarLiteral)) {
+            operation.setError("Cannot multiply or divide without one scalar");
+        }
+    }
+
+    private void checkAdditiveOperation(Operation operation) {
+        if (operation.lhs.getClass() != operation.rhs.getClass()) {
+            operation.setError("Cannot add or subtract different types");
+        }
     }
 
     private void checkOperationHandSide(Expression expression) {
