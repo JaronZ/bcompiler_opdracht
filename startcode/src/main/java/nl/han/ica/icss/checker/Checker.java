@@ -138,9 +138,9 @@ public class Checker {
         }
     }
 
-    private void checkOperation(Operation expression) {
-        checkOperationHandSide(expression.lhs);
-        checkOperationHandSide(expression.rhs);
+    private void checkOperation(Operation operation) {
+        checkOperationHandSide(operation.lhs);
+        checkOperationHandSide(operation.rhs);
     }
 
     private void checkOperationHandSide(Expression expression) {
