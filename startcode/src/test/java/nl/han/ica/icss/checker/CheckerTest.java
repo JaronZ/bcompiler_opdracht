@@ -69,4 +69,12 @@ public class CheckerTest {
         assertEquals(exp, act);
         assertEquals(act.getErrors(), List.of());
     }
+
+    @Test
+    void testErrors() {
+        List<SemanticError> exp = Fixtures.errorsFromUncheckedErrors();
+        AST act = Fixtures.uncheckedErrors();
+        sut.check(act);
+        assertEquals(exp, act.getErrors());
+    }
 }

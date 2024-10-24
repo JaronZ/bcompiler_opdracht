@@ -9,6 +9,9 @@ import nl.han.ica.icss.ast.selectors.ClassSelector;
 import nl.han.ica.icss.ast.selectors.IdSelector;
 import nl.han.ica.icss.ast.selectors.TagSelector;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Fixtures {
 
     public static AST uncheckedLevel0() {
@@ -1120,5 +1123,123 @@ public class Fixtures {
 						.addChild(new PixelLiteral("5px"))));
 
 		return new AST(stylesheet);
+    }
+
+    public static AST uncheckedErrors() {
+        Stylesheet stylesheet = new Stylesheet();
+
+        /*
+        Pixel := 10px;
+        Color := #ffffff;
+        MultWithTwoPixels := 2px * 10px;
+        AddWithDifferentTypes := 10 + 10%;
+        OperationWithColor := 10 * #ffffff;
+        AddPixelWithColor := Pixel + Color;
+         */
+        stylesheet.addChild(new VariableAssignment()
+                        .addChild(new VariableReference("Pixel"))
+                        .addChild(new PixelLiteral("10px")))
+                .addChild(new VariableAssignment()
+                        .addChild(new VariableReference("Color"))
+                        .addChild(new ColorLiteral("#ffffff")))
+                .addChild(new VariableAssignment()
+                        .addChild(new VariableReference("MultWithTwoPixels"))
+                        .addChild(new MultiplyOperation()
+                                .addChild(new PixelLiteral("2px"))
+                                .addChild(new PixelLiteral("10px"))))
+                .addChild(new VariableAssignment()
+                        .addChild(new VariableReference("AddWithDifferentTypes"))
+                        .addChild(new AddOperation()
+                                .addChild(new ScalarLiteral(10))
+                                .addChild(new PercentageLiteral("10%"))))
+                .addChild(new VariableAssignment()
+                        .addChild(new VariableReference("OperationWithColor"))
+                        .addChild(new MultiplyOperation()
+                                .addChild(new ScalarLiteral(10))
+                                .addChild(new ColorLiteral("#ffffff"))))
+				.addChild(new VariableAssignment()
+						.addChild(new VariableReference("AddPixelWithColor"))
+						.addChild(new AddOperation()
+								.addChild(new VariableReference("Pixel"))
+								.addChild(new VariableReference("Color"))));
+        /*
+        p {
+            if [10] {
+                color: 10px;
+            }
+            if [3 * 5%] {
+                background-color: #ffffff;
+            }
+            width: #ffffff;
+            height: ThisVariableDoesNotExist;
+            color: ThisVariableDoesNotExist2;
+            color: Pixel;
+            height: Color;
+            this-property: #ffffff;
+            width: 10px + 10% * 10;
+            height: 10px * 10 * 10px;
+        }
+         */
+        stylesheet.addChild(new Stylerule()
+                .addChild(new TagSelector("p"))
+                .addChild(new IfClause()
+                        .addChild(new ScalarLiteral(10))
+                        .addChild(new Declaration("color")
+                                .addChild(new PixelLiteral("10px"))))
+                .addChild(new IfClause()
+                        .addChild(new MultiplyOperation()
+                                .addChild(new ScalarLiteral(3))
+                                .addChild(new PercentageLiteral("5%")))
+                        .addChild(new Declaration("background-color")
+                                .addChild(new ColorLiteral("#ffffff"))))
+                .addChild(new Declaration("width")
+                        .addChild(new ColorLiteral("#ffffff")))
+                .addChild(new Declaration("height")
+                        .addChild(new VariableReference("ThisVariableDoesNotExist")))
+                .addChild(new Declaration("color")
+                        .addChild(new VariableReference("ThisVariableDoesNotExist2")))
+                .addChild(new Declaration("color")
+                        .addChild(new VariableReference("Pixel")))
+                .addChild(new Declaration("height")
+                        .addChild(new VariableReference("Color")))
+                .addChild(new Declaration("this-property")
+                        .addChild(new ColorLiteral("#ffffff")))
+				.addChild(new Declaration("width")
+						.addChild(new AddOperation()
+								.addChild(new PixelLiteral("10px"))
+								.addChild(new MultiplyOperation()
+										.addChild(new PercentageLiteral("10%"))
+										.addChild(new ScalarLiteral(10)))))
+				.addChild(new Declaration("height")
+						.addChild(new MultiplyOperation()
+								.addChild(new PixelLiteral("10px"))
+								.addChild(new MultiplyOperation()
+										.addChild(new ScalarLiteral(10))
+										.addChild(new PixelLiteral("10px"))
+								))));
+
+        return new AST(stylesheet);
+    }
+
+    public static List<SemanticError> errorsFromUncheckedErrors() {
+        List<SemanticError> errors = new ArrayList<>();
+
+		errors.add(new SemanticError("Cannot multiply non-scalars"));
+		errors.add(new SemanticError("Cannot add or subtract different types"));
+		errors.add(new SemanticError("Cannot use color literals in operations"));
+		errors.add(new SemanticError("Cannot add or subtract different types"));
+		errors.add(new SemanticError("Invalid type for conditional. Expected boolean, got ScalarLiteral"));
+		errors.add(new SemanticError("Invalid type for color property. Expected color, got PixelLiteral"));
+		errors.add(new SemanticError("Invalid type for conditional. Expected boolean, got operation"));
+		errors.add(new SemanticError("Invalid type for size property. Expected pixel or percentage, got ColorLiteral"));
+		errors.add(new SemanticError("Variable 'ThisVariableDoesNotExist' used before assignment"));
+		errors.add(new SemanticError("Variable 'ThisVariableDoesNotExist2' used before assignment"));
+		errors.add(new SemanticError("Invalid type for variable 'Pixel'. Expected COLOR, got PIXEL"));
+		errors.add(new SemanticError("Invalid type for variable 'Color'. Expected one of [PIXEL, PERCENTAGE], got COLOR"));
+		errors.add(new SemanticError("Invalid property 'this-property'"));
+		errors.add(new SemanticError("Cannot add or subtract different types"));
+		errors.add(new SemanticError("Cannot multiply non-scalars"));
+
+        return errors;
     }
 }
