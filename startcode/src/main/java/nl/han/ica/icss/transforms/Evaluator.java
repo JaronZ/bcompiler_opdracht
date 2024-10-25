@@ -77,9 +77,11 @@ public class Evaluator implements Transform {
     }
 
     private void applyIfClause(IfClause ifClause, List<ASTNode> body) {
+        variableValues.addFirst(new HashMap<>());
         int index = body.indexOf(ifClause);
         body.addAll(index, evaluateIfClause(ifClause));
         body.remove(ifClause);
+        variableValues.removeFirst();
     }
 
     private void applyDeclaration(Declaration declaration) {

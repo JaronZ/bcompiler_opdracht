@@ -96,11 +96,13 @@ public class Checker {
     }
 
     private void checkIfClause(IfClause ifClause) {
+        variableTypes.addFirst(new HashMap<>());
         checkConditionalExpression(ifClause.conditionalExpression);
         checkStyleruleBody(ifClause.body);
         if (ifClause.elseClause != null) {
             checkStyleruleBody(ifClause.elseClause.body);
         }
+        variableTypes.removeFirst();
     }
 
     private void checkConditionalExpression(Expression conditionalExpression) {
