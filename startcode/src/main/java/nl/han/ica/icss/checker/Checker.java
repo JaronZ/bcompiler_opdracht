@@ -77,7 +77,7 @@ public class Checker {
                 return scope.get(((VariableReference) expression).name);
             }
         }
-        return null;
+        return ExpressionType.UNDEFINED;
     }
 
     private Expression leftUnlessScalar(Operation operation) {
