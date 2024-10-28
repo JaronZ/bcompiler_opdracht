@@ -153,25 +153,31 @@ public class Checker {
     }
 
     private void checkVariableReference(VariableReference reference, ExpressionType expectedType) {
-        for (int i = 0; i < variableTypes.getSize(); i++) {
-            HashMap<String, ExpressionType> scope = variableTypes.get(i);
-            if (scope.containsKey(reference.name)) {
-                checkVariableReferenceType(reference, scope, expectedType);
-                return;
-            }
+        HashMap<String, ExpressionType> scope = getNearestVariableReferenceScope(reference);
+        if (scope == null) {
+            reference.setError("Variable '" + reference.name + "' used before assignment");
+            return;
         }
-        reference.setError("Variable '" + reference.name + "' used before assignment");
+        checkVariableReferenceType(reference, scope, expectedType);
     }
 
     private void checkVariableReference(VariableReference reference, List<ExpressionType> expectedTypes) {
+        HashMap<String, ExpressionType> scope = getNearestVariableReferenceScope(reference);
+        if (scope == null) {
+            reference.setError("Variable '" + reference.name + "' used before assignment");
+            return;
+        }
+        checkVariableReferenceType(reference, scope, expectedTypes);
+    }
+
+    private HashMap<String, ExpressionType> getNearestVariableReferenceScope(VariableReference reference) {
         for (int i = 0; i < variableTypes.getSize(); i++) {
             HashMap<String, ExpressionType> scope = variableTypes.get(i);
             if (scope.containsKey(reference.name)) {
-                checkVariableReferenceType(reference, scope, expectedTypes);
-                return;
+                return scope;
             }
         }
-        reference.setError("Variable '" + reference.name + "' used before assignment");
+        return null;
     }
 
     private void checkVariableReferenceType(VariableReference reference, HashMap<String, ExpressionType> scope, ExpressionType expectedType) {
