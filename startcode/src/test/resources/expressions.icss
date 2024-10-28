@@ -31,7 +31,7 @@ div {
     if [A] {
         height: 2% + C + 6%;
     } else {
-        height: C - E;
+        height: C - E + 1%;
     }
 }
 
