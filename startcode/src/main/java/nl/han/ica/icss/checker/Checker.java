@@ -11,10 +11,20 @@ import nl.han.ica.icss.ast.types.ExpressionType;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.function.Consumer;
 
 
 public class Checker {
     private IHANLinkedList<HashMap<String, ExpressionType>> variableTypes;
+    private final HashMap<String, Consumer<Expression>> declarationExpressionCheckers;
+
+    public Checker() {
+        declarationExpressionCheckers = new HashMap<>();
+        declarationExpressionCheckers.put("width", this::checkSizeExpression);
+        declarationExpressionCheckers.put("height", this::checkSizeExpression);
+        declarationExpressionCheckers.put("color", this::checkColorExpression);
+        declarationExpressionCheckers.put("background-color", this::checkColorExpression);
+    }
 
     public void check(AST ast) {
         variableTypes = new HANLinkedList<>();
@@ -118,11 +128,9 @@ public class Checker {
     private void checkDeclaration(Declaration declaration) {
         checkPropertyName(declaration.property);
         checkExpression(declaration.expression);
-        if (List.of("width", "height").contains(declaration.property.name)) {
-            checkSizeExpression(declaration.expression);
-        }
-        if (List.of("color", "background-color").contains(declaration.property.name)) {
-            checkColorExpression(declaration.expression);
+        if (declarationExpressionCheckers.containsKey(declaration.property.name)) {
+            Consumer<Expression> checker = declarationExpressionCheckers.get(declaration.property.name);
+            checker.accept(declaration.expression);
         }
     }
 
@@ -183,7 +191,7 @@ public class Checker {
     }
 
     private void checkPropertyName(PropertyName property) {
-        if (!List.of("width", "height", "color", "background-color").contains(property.name)) {
+        if (!declarationExpressionCheckers.containsKey(property.name)) {
             property.setError("Invalid property '" + property.name + "'");
         }
     }
