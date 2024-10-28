@@ -72,11 +72,9 @@ public class Checker {
             return getExpressionType(leftUnlessScalar((Operation) expression));
         }
         if (expression instanceof VariableReference) {
-            for (int i = 0; i < variableTypes.getSize(); i++) {
-                HashMap<String, ExpressionType> scope = variableTypes.get(i);
-                if (scope.containsKey(((VariableReference) expression).name)) {
-                    return scope.get(((VariableReference) expression).name);
-                }
+            HashMap<String, ExpressionType> scope = getNearestVariableReferenceScope((VariableReference) expression);
+            if (scope != null) {
+                return scope.get(((VariableReference) expression).name);
             }
         }
         return null;
