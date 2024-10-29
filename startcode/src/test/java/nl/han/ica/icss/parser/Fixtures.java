@@ -546,7 +546,7 @@ public class Fixtures {
 			if [A] {
 				height: 2% + C + 6%;
 			} else {
-				height: C - E;
+				height: C - E + 1%;
 			}
 		}
 		 */
@@ -566,9 +566,11 @@ public class Fixtures {
 										.addChild(new PercentageLiteral("6%"))))
 						.addChild(new ElseClause()
 								.addChild(new Declaration("height")
-										.addChild(new SubtractOperation()
-												.addChild(new VariableReference("C"))
-												.addChild(new VariableReference("E")))))));
+										.addChild(new AddOperation()
+												.addChild(new SubtractOperation()
+														.addChild(new VariableReference("C"))
+														.addChild(new VariableReference("E")))
+												.addChild(new PercentageLiteral("1%")))))));
 		/*
 		#menu {
 			width: I + 2 * 3px;
