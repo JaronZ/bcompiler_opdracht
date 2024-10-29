@@ -1178,6 +1178,7 @@ public class Fixtures {
             this-property: #ffffff;
             width: 10px + 10% * 10;
             height: 10px * 10 * 10px;
+            width: 2 * 2 * 2px * 2%;
         }
          */
         stylesheet.addChild(new Stylerule()
@@ -1216,7 +1217,15 @@ public class Fixtures {
 								.addChild(new MultiplyOperation()
 										.addChild(new ScalarLiteral(10))
 										.addChild(new PixelLiteral("10px"))
-								))));
+								)))
+				.addChild(new Declaration("width")
+						.addChild(new MultiplyOperation()
+								.addChild(new MultiplyOperation()
+										.addChild(new MultiplyOperation()
+												.addChild(new ScalarLiteral(2))
+												.addChild(new ScalarLiteral(2)))
+										.addChild(new PixelLiteral("2px")))
+								.addChild(new PercentageLiteral("2%")))));
 
         return new AST(stylesheet);
     }
@@ -1238,6 +1247,7 @@ public class Fixtures {
 		errors.add(new SemanticError("Invalid type for variable 'Color'. Expected one of [PIXEL, PERCENTAGE], got COLOR"));
 		errors.add(new SemanticError("Invalid property 'this-property'"));
 		errors.add(new SemanticError("Cannot add or subtract different types"));
+		errors.add(new SemanticError("Cannot multiply non-scalars"));
 		errors.add(new SemanticError("Cannot multiply non-scalars"));
 
         return errors;
