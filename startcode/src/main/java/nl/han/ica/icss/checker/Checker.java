@@ -81,7 +81,7 @@ public class Checker {
     }
 
     private Expression leftUnlessScalar(Operation operation) {
-        if (operation.lhs instanceof ScalarLiteral) {
+        if (getExpressionType(operation.lhs) == ExpressionType.SCALAR) {
             return operation.rhs;
         }
         return operation.lhs;
