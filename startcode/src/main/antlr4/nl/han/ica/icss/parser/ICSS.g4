@@ -41,6 +41,8 @@ MIN: '-';
 MUL: '*';
 ASSIGNMENT_OPERATOR: ':=';
 COMMA: ',';
+AND: '&&';
+OR: '||';
 
 
 
@@ -69,6 +71,8 @@ selector: LOWER_IDENT # tagSelector
 expression: expression MUL expression # multiplyOperation
     // Merged to make sure neither plus nor minus has precedence over the other
     | expression operator = (PLUS|MIN) expression # additiveOperation
+    | expression AND expression # logicalAndOperation
+    | expression OR expression # logicalOrOperation
     | literal # literalExpression
     | variableReference # variableExpression
 ;
