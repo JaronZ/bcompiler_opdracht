@@ -3,6 +3,8 @@ package nl.han.ica.icss.generator;
 
 import nl.han.ica.icss.ast.*;
 
+import java.util.stream.Collectors;
+
 public class Generator {
 	public String generate(AST ast) {
 		StringBuilder builder = new StringBuilder();
@@ -20,9 +22,11 @@ public class Generator {
 	}
 
 	private void generateStylerule(Stylerule stylerule, StringBuilder sb) {
-		for (Selector selector : stylerule.selectors) {
-			sb.append(selector);
-		}
+		sb.append(
+				stylerule.selectors.stream()
+						.map(Object::toString)
+						.collect(Collectors.joining(", "))
+		);
 		sb.append(" {\n");
 		for (ASTNode child : stylerule.body) {
 			if (child instanceof Declaration) {
