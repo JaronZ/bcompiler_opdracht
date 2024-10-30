@@ -5,9 +5,7 @@ import nl.han.ica.datastructures.HANStack;
 import nl.han.ica.datastructures.IHANStack;
 import nl.han.ica.icss.ast.*;
 import nl.han.ica.icss.ast.literals.*;
-import nl.han.ica.icss.ast.operations.AddOperation;
-import nl.han.ica.icss.ast.operations.MultiplyOperation;
-import nl.han.ica.icss.ast.operations.SubtractOperation;
+import nl.han.ica.icss.ast.operations.*;
 import nl.han.ica.icss.ast.selectors.ClassSelector;
 import nl.han.ica.icss.ast.selectors.IdSelector;
 import nl.han.ica.icss.ast.selectors.TagSelector;
@@ -229,6 +227,30 @@ public class ASTListener extends ICSSBaseListener {
 	@Override
 	public void exitAdditiveOperation(ICSSParser.AdditiveOperationContext ctx) {
 		Operation operation = (Operation) currentContainer.pop();
+		currentContainer.peek().addChild(operation);
+	}
+
+	@Override
+	public void enterLogicalAndOperation(ICSSParser.LogicalAndOperationContext ctx) {
+		LogicalAndOperation operation = new LogicalAndOperation();
+		currentContainer.push(operation);
+	}
+
+	@Override
+	public void exitLogicalAndOperation(ICSSParser.LogicalAndOperationContext ctx) {
+		LogicalAndOperation operation = (LogicalAndOperation) currentContainer.pop();
+		currentContainer.peek().addChild(operation);
+	}
+
+	@Override
+	public void enterLogicalOrOperation(ICSSParser.LogicalOrOperationContext ctx) {
+		LogicalOrOperation operation = new LogicalOrOperation();
+		currentContainer.push(operation);
+	}
+
+	@Override
+	public void exitLogicalOrOperation(ICSSParser.LogicalOrOperationContext ctx) {
+		LogicalOrOperation operation = (LogicalOrOperation) currentContainer.pop();
 		currentContainer.peek().addChild(operation);
 	}
 
