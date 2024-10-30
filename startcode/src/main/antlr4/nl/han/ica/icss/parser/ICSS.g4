@@ -40,6 +40,7 @@ PLUS: '+';
 MIN: '-';
 MUL: '*';
 ASSIGNMENT_OPERATOR: ':=';
+COMMA: ',';
 
 
 
@@ -52,7 +53,7 @@ variableAssignment: variableReference ASSIGNMENT_OPERATOR expression SEMICOLON;
 variableReference: CAPITAL_IDENT;
 
 // Stylerules
-stylerule: selector OPEN_BRACE (declaration|ifClause|variableAssignment)* CLOSE_BRACE;
+stylerule: selector (COMMA selector)* OPEN_BRACE (declaration|ifClause|variableAssignment)* CLOSE_BRACE;
 
 // Declaration
 declaration: propertyName COLON expression SEMICOLON;
