@@ -7,8 +7,7 @@ import nl.han.ica.icss.ast.literals.BoolLiteral;
 import nl.han.ica.icss.ast.literals.PercentageLiteral;
 import nl.han.ica.icss.ast.literals.PixelLiteral;
 import nl.han.ica.icss.ast.literals.ScalarLiteral;
-import nl.han.ica.icss.ast.operations.AddOperation;
-import nl.han.ica.icss.ast.operations.SubtractOperation;
+import nl.han.ica.icss.ast.operations.*;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -111,15 +110,24 @@ public class Evaluator implements Transform {
         Literal left = evaluateExpression(operation.lhs);
         Literal right = evaluateExpression(operation.rhs);
         if (operation instanceof AddOperation) {
-            return evaluateOperation(left, right, Integer::sum);
+            return evaluateNumericOperation(left, right, Integer::sum);
         }
         if (operation instanceof SubtractOperation) {
-            return evaluateOperation(left, right, (a, b) -> a - b);
+            return evaluateNumericOperation(left, right, (a, b) -> a - b);
         }
-        return evaluateOperation(left, right, (a, b) -> a * b);
+        if (operation instanceof MultiplyOperation) {
+            return evaluateNumericOperation(left, right, (a, b) -> a * b);
+        }
+        if (operation instanceof LogicalAndOperation) {
+            return evaluateLogicalOperation((BoolLiteral) left, (BoolLiteral) right, (a, b) -> a && b);
+        }
+        if (operation instanceof LogicalOrOperation) {
+            return evaluateLogicalOperation((BoolLiteral) left, (BoolLiteral) right, (a, b) -> a || b);
+        }
+        return null;
     }
 
-    private Literal evaluateOperation(Literal left, Literal right, BiFunction<Integer, Integer, Integer> eval) {
+    private Literal evaluateNumericOperation(Literal left, Literal right, BiFunction<Integer, Integer, Integer> eval) {
         int leftValue = getNumericLiteralValue(left);
         int rightValue = getNumericLiteralValue(right);
         int result = eval.apply(leftValue, rightValue);
@@ -128,6 +136,11 @@ public class Evaluator implements Transform {
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private Literal evaluateLogicalOperation(BoolLiteral left, BoolLiteral right, BiFunction<Boolean, Boolean, Boolean> eval) {
+        boolean result = eval.apply(left.value, right.value);
+        return new BoolLiteral(result);
     }
 
     private Literal leftUnlessScalar(Literal left, Literal right) {
