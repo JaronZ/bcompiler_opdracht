@@ -389,4 +389,67 @@ public class Fixtures {
 				"}\n"
 		;
 	}
+
+	public static AST transformedSelectors() {
+		Stylesheet stylesheet = new Stylesheet();
+
+		/*
+		HeaderColor := #ffff00;
+		 */
+		stylesheet.addChild(new VariableAssignment()
+				.addChild(new VariableReference("HeaderColor"))
+				.addChild(new ColorLiteral("#ffff00")));
+		/*
+		p {
+			width: 100px;
+		}
+		 */
+		stylesheet.addChild(new Stylerule()
+				.addChild(new TagSelector("p"))
+				.addChild(new Declaration("width")
+						.addChild(new PixelLiteral("100px"))));
+		/*
+		h1, h2, h3, h4, h5, h6 {
+			color: #ffff00;
+		}
+		 */
+		stylesheet.addChild(new Stylerule()
+				.addChild(new TagSelector("h1"))
+				.addChild(new TagSelector("h2"))
+				.addChild(new TagSelector("h3"))
+				.addChild(new TagSelector("h4"))
+				.addChild(new TagSelector("h5"))
+				.addChild(new TagSelector("h6"))
+				.addChild(new Declaration("color")
+						.addChild(new ColorLiteral("#ffff00"))));
+		/*
+		span, #menu, .menu {
+			height: 5%;
+			background-color: #00ff00;
+		}
+		 */
+		stylesheet.addChild(new Stylerule()
+				.addChild(new TagSelector("span"))
+				.addChild(new IdSelector("#menu"))
+				.addChild(new ClassSelector(".menu"))
+				.addChild(new Declaration("height")
+						.addChild(new PercentageLiteral("5%")))
+				.addChild(new Declaration("background-color")
+						.addChild(new ColorLiteral("#00ff00"))));
+
+		return new AST(stylesheet);
+	}
+
+	public static String generatedSelectors() {
+		return  "p {\n" +
+				"  width: 100px;\n" +
+				"}\n" +
+				"h1, h2, h3, h4, h5, h6 {\n" +
+				"  color: #ffff00;\n" +
+				"}\n" +
+				"span, #menu, .menu {\n" +
+				"  height: 5%;\n" +
+				"  background-color: #00ff00;\n" +
+				"}\n";
+	}
 }

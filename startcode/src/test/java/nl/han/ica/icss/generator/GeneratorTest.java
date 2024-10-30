@@ -40,4 +40,11 @@ public class GeneratorTest {
         String act = sut.generate(Fixtures.transformedExpressions());
         assertEquals(exp, act);
     }
+
+    @Test
+    void testSelectors() {
+        String exp = Fixtures.generatedSelectors();
+        String act = sut.generate(Fixtures.transformedSelectors());
+        assertEquals(exp, act);
+    }
 }

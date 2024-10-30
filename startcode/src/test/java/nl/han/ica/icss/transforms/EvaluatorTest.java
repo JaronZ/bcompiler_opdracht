@@ -61,4 +61,12 @@ public class EvaluatorTest {
         sut.apply(act);
         assertEquals(exp, act);
     }
+
+    @Test
+    void testSelectors() {
+        AST exp = Fixtures.transformedSelectors();
+        AST act = Fixtures.checkedSelectors();
+        sut.apply(act);
+        assertEquals(exp, act);
+    }
 }

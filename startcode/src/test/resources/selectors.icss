@@ -1,0 +1,14 @@
+HeaderColor := #ffff00;
+
+p {
+    width: 100px;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: HeaderColor;
+}
+
+span, #menu, .menu {
+    height: 5%;
+    background-color: #00ff00;
+}

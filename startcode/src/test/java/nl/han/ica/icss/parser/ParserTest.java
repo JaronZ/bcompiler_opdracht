@@ -95,4 +95,11 @@ class ParserTest {
 		AST exp = Fixtures.uncheckedExpressions();
 		assertEquals(exp,sut);
 	}
+
+	@Test
+	void testParseSelectors() throws IOException {
+		AST sut = parseTestFile("selectors.icss");
+		AST exp = Fixtures.uncheckedSelectors();
+		assertEquals(exp,sut);
+	}
 }
