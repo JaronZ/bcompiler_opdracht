@@ -1240,7 +1240,7 @@ public class Fixtures {
 		errors.add(new SemanticError("Invalid type for conditional. Expected boolean, got ScalarLiteral"));
 		errors.add(new SemanticError("Invalid type for color property. Expected color, got PixelLiteral"));
 		errors.add(new SemanticError("Invalid type for conditional. Expected boolean, got operation"));
-		errors.add(new SemanticError("Invalid type for size property. Expected pixel or percentage, got ColorLiteral"));
+		errors.add(new SemanticError("Invalid type for size property. Expected pixel or percentage, got COLOR"));
 		errors.add(new SemanticError("Variable 'ThisVariableDoesNotExist' used before assignment"));
 		errors.add(new SemanticError("Variable 'ThisVariableDoesNotExist2' used before assignment"));
 		errors.add(new SemanticError("Invalid type for variable 'Pixel'. Expected COLOR, got PIXEL"));

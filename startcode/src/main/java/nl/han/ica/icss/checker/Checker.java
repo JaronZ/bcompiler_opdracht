@@ -4,9 +4,7 @@ import nl.han.ica.datastructures.HANLinkedList;
 import nl.han.ica.datastructures.IHANLinkedList;
 import nl.han.ica.icss.ast.*;
 import nl.han.ica.icss.ast.literals.*;
-import nl.han.ica.icss.ast.operations.AddOperation;
-import nl.han.ica.icss.ast.operations.MultiplyOperation;
-import nl.han.ica.icss.ast.operations.SubtractOperation;
+import nl.han.ica.icss.ast.operations.*;
 import nl.han.ica.icss.ast.types.ExpressionType;
 
 import java.util.HashMap;
@@ -65,7 +63,7 @@ public class Checker {
         if (expression instanceof ScalarLiteral) {
             return ExpressionType.SCALAR;
         }
-        if (expression instanceof AddOperation || expression instanceof SubtractOperation) {
+        if (expression instanceof AddOperation || expression instanceof SubtractOperation || expression instanceof LogicalAndOperation || expression instanceof LogicalOrOperation) {
             return getExpressionType(((Operation) expression).lhs);
         }
         if (expression instanceof MultiplyOperation) {
@@ -118,7 +116,7 @@ public class Checker {
             conditionalExpression.setError("Invalid type for conditional. Expected boolean, got " + conditionalExpression.getClass().getSimpleName());
         } else if (conditionalExpression instanceof VariableReference) {
             checkVariableReference((VariableReference) conditionalExpression, ExpressionType.BOOL);
-        } else if (conditionalExpression instanceof Operation) {
+        } else if (conditionalExpression instanceof Operation && !(conditionalExpression instanceof LogicalAndOperation || conditionalExpression instanceof LogicalOrOperation)) {
             conditionalExpression.setError("Invalid type for conditional. Expected boolean, got operation");
         }
     }
@@ -143,10 +141,11 @@ public class Checker {
     private void checkSizeExpression(Expression expression) {
         if (expression instanceof VariableReference) {
             checkVariableReference((VariableReference) expression, List.of(ExpressionType.PIXEL, ExpressionType.PERCENTAGE));
-        } else if (expression instanceof Operation) {
-            checkOperation((Operation) expression);
-        } else if (!(expression instanceof PixelLiteral || expression instanceof PercentageLiteral)) {
-            expression.setError("Invalid type for size property. Expected pixel or percentage, got " + expression.getClass().getSimpleName());
+        } else {
+            ExpressionType type = getExpressionType(expression);
+            if (type != ExpressionType.PIXEL && type != ExpressionType.PERCENTAGE) {
+                expression.setError("Invalid type for size property. Expected pixel or percentage, got " + type);
+            }
         }
     }
 
@@ -215,6 +214,16 @@ public class Checker {
             checkAdditiveOperation(operation);
         } else if (operation instanceof MultiplyOperation) {
             checkMultiplicativeOperation(operation);
+        } else if (operation instanceof LogicalAndOperation || operation instanceof LogicalOrOperation) {
+            checkLogicalOperation(operation);
+        }
+    }
+
+    private void checkLogicalOperation(Operation operation) {
+        ExpressionType left = getExpressionType(operation.lhs);
+        ExpressionType right = getExpressionType(operation.rhs);
+        if (left != ExpressionType.BOOL || right != ExpressionType.BOOL) {
+            operation.setError("Cannot use logical operation on non-booleans");
         }
     }
 
