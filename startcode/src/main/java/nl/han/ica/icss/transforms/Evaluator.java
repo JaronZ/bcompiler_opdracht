@@ -42,6 +42,7 @@ public class Evaluator implements Transform {
 
     private void applyVariableAssignment(VariableAssignment assignment) {
         Literal value = evaluateExpression(assignment.expression);
+        assignment.expression = value;
         variableValues.getFirst().put(assignment.name.name, value);
     }
 

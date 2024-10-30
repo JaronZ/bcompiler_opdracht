@@ -534,10 +534,10 @@ public class Fixtures {
 
         /*
         ParWidth := 28%;
-        ParHeight := 13px + 5px;
-        SpanWidth := 3 * 10% - 5%;
+        ParHeight := 18px;
+        SpanWidth := 25%;
         SpanColor := #000000;
-        DivSize := 5px + 3px * 4;
+        DivSize := 17px;
         DivColor := #abcdef;
          */
         stylesheet.addChild(new VariableAssignment()
@@ -545,26 +545,16 @@ public class Fixtures {
                         .addChild(new PercentageLiteral("28%")))
                 .addChild(new VariableAssignment()
                         .addChild(new VariableReference("ParHeight"))
-                        .addChild(new AddOperation()
-                                .addChild(new PixelLiteral("13px"))
-                                .addChild(new PixelLiteral("5px"))))
+                        .addChild(new PixelLiteral("18px")))
                 .addChild(new VariableAssignment()
                         .addChild(new VariableReference("SpanWidth"))
-                        .addChild(new SubtractOperation()
-                                .addChild(new MultiplyOperation()
-                                        .addChild(new ScalarLiteral(3))
-                                        .addChild(new PercentageLiteral("10%")))
-                                .addChild(new PercentageLiteral("5%"))))
+                        .addChild(new PercentageLiteral("25%")))
                 .addChild(new VariableAssignment()
                         .addChild(new VariableReference("SpanColor"))
                         .addChild(new ColorLiteral("#000000")))
                 .addChild(new VariableAssignment()
                         .addChild(new VariableReference("DivSize"))
-                        .addChild(new AddOperation()
-                                .addChild(new PixelLiteral("5px"))
-                                .addChild(new MultiplyOperation()
-                                        .addChild(new PixelLiteral("3px"))
-                                        .addChild(new ScalarLiteral(4)))))
+                        .addChild(new PixelLiteral("17px")))
                 .addChild(new VariableAssignment()
                         .addChild(new VariableReference("DivColor"))
                         .addChild(new ColorLiteral("#abcdef")));
@@ -800,13 +790,13 @@ public class Fixtures {
 		A := TRUE;
 		B := #ffffff;
 		C := 14%;
-		D := B;
-		E := 3% + 4%;
-		F := 3 + 4;
-		G := 3px - 4px;
-		H := 3 * 4;
-		I := 3 * 4px;
-		J := 3% * 4;
+		D := #ffffff;
+		E := 7%;
+		F := 7;
+		G := -1px;
+		H := 12;
+		I := 12px;
+		J := 12%;
 		 */
 		stylesheet.addChild(new VariableAssignment()
 						.addChild(new VariableReference("A"))
@@ -819,37 +809,25 @@ public class Fixtures {
 						.addChild(new PercentageLiteral("14%")))
 				.addChild(new VariableAssignment()
 						.addChild(new VariableReference("D"))
-						.addChild(new VariableReference("B")))
+						.addChild(new ColorLiteral("#ffffff")))
 				.addChild(new VariableAssignment()
 						.addChild(new VariableReference("E"))
-						.addChild(new AddOperation()
-								.addChild(new PercentageLiteral("3%"))
-								.addChild(new PercentageLiteral("4%"))))
+						.addChild(new PercentageLiteral("7%")))
 				.addChild(new VariableAssignment()
 						.addChild(new VariableReference("F"))
-						.addChild(new AddOperation()
-								.addChild(new ScalarLiteral(3))
-								.addChild(new ScalarLiteral(4))))
+						.addChild(new ScalarLiteral(7)))
 				.addChild(new VariableAssignment()
 						.addChild(new VariableReference("G"))
-						.addChild(new SubtractOperation()
-								.addChild(new PixelLiteral("3px"))
-								.addChild(new PixelLiteral("4px"))))
+						.addChild(new PixelLiteral(-1)))
 				.addChild(new VariableAssignment()
 						.addChild(new VariableReference("H"))
-						.addChild(new MultiplyOperation()
-								.addChild(new ScalarLiteral(3))
-								.addChild(new ScalarLiteral(4))))
+						.addChild(new ScalarLiteral(12)))
 				.addChild(new VariableAssignment()
 						.addChild(new VariableReference("I"))
-						.addChild(new MultiplyOperation()
-								.addChild(new ScalarLiteral(3))
-								.addChild(new PixelLiteral("4px"))))
+						.addChild(new PixelLiteral("12px")))
 				.addChild(new VariableAssignment()
 						.addChild(new VariableReference("J"))
-						.addChild(new MultiplyOperation()
-								.addChild(new PercentageLiteral("3%"))
-								.addChild(new ScalarLiteral(4))));
+						.addChild(new PercentageLiteral("12%")));
 		/*
 		p {
 			color: #ffffff;

@@ -590,4 +590,10 @@ public class Fixtures {
 
 		return new AST(stylesheet);
 	}
+
+	public static AST uncheckedSelectors() {
+		Stylesheet stylesheet = new Stylesheet();
+
+		return new AST(stylesheet);
+	}
 }
