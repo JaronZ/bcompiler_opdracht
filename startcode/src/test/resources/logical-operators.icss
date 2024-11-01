@@ -1,0 +1,39 @@
+ColorEnabled := TRUE;
+HasColor := ColorEnabled && TRUE;
+HasBackgroundColor := ColorEnabled || FALSE;
+HasHeight1 := FALSE;
+HasHeight2 := TRUE;
+HasWidth1 := TRUE;
+HasWidth2 := TRUE;
+
+p {
+    if [HasColor] {
+        color: #ffffff;
+    }
+    if [HasBackgroundColor] {
+        background-color: #cccccc;
+    }
+    if [HasHeight1 && HasHeight2] {
+        height: 10%;
+    }
+    if [HasWidth1 || HasWidth2] {
+        width: 10px;
+    }
+}
+
+h1 {
+    if [TRUE || FALSE && TRUE] {
+        width: 10px;
+    }
+    if [FALSE && FALSE || TRUE] {
+        height: 10%;
+    }
+    if [FALSE || FALSE] {
+        color: #cccccc;
+    } else {
+        color: #aaaaaa;
+    }
+    if [TRUE && TRUE] {
+        background-color: #555555;
+    }
+}
